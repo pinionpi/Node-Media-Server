@@ -86,7 +86,8 @@ class NodeTransSession extends EventEmitter {
               || filename.endsWith('.mpd')
               || filename.endsWith('.m4s')
               || filename.endsWith('.tmp')) {
-              fs.unlinkSync(ouPath + '/' + filename);
+              //fs.unlinkSync(ouPath + '/' + filename);
+              //Logger.log("[SKIP] Not delete file: " + ouPath + '/' + filename); // DEBUG
             }
           });
         }
