@@ -36,7 +36,17 @@ class NodeHttpServer {
     app.use(bodyParser.urlencoded({ extended: true }));
 
     app.all('*', (req, res, next) => {
-      res.header('Access-Control-Allow-Origin', this.config.http.allow_origin);
+      // Fix cors header contains multiple values
+      // Ref: https://stackoverflow.com/questions/41910130/cors-issues-the-access-control-allow-origin-header-mustnt-contain-multiple-v
+      if (this.config.http.allow_origins) {
+        let allowedOrigins = this.config.http.allow_origins; //["http://ServerA:3000", "http://ServerB:3000"];
+        let origin = req.headers.origin;
+        if (allowedOrigins.includes(origin)) {
+            res.header("Access-Control-Allow-Origin", origin); // restrict it to the required domain
+        }
+      } else {
+        res.header('Access-Control-Allow-Origin', this.config.http.allow_origin);
+      }
       res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
       res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
       res.header('Access-Control-Allow-Credentials', true);
