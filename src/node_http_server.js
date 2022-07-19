@@ -47,9 +47,15 @@ class NodeHttpServer {
       } else {
         res.header('Access-Control-Allow-Origin', this.config.http.allow_origin);
       }
-      res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
+      // Fix cors allow_headers
+      if (this.config.http.allow_headers) {
+        var allow_headers_append = "," + this.config.http.allow_headers.join(",");
+        res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Accept,X-Requested-With,Authorization' + allow_headers_append);
+      } else {
+        res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Accept,X-Requested-With,Authorization');
+      }
       res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
-      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Credentials', true); // credentials
       req.method === 'OPTIONS' ? res.sendStatus(200) : next();
     });
 
